@@ -568,16 +568,12 @@
 
 'use strict';
 
-// --- 1. STATE MANAGEMENT ---
-// Central object to hold the game's state
 const gameState = {
-    scores: [0, 0], // scores[0] for Player 1, scores[1] for Player 2
+    scores: [0, 0],
     winningScore: 5,
     gameActive: true,
 };
 
-// --- 2. DOM ELEMENT SELECTION ---
-// Selecting all necessary elements from the HTML
 const player1ScoreEl = document.getElementById('score-1');
 const player2ScoreEl = document.getElementById('score-2');
 const player1ContainerEl = document.querySelector('.player-1');
@@ -591,43 +587,34 @@ const targetScoreEl = document.querySelector('.target');
 const winnerMessageEl = document.querySelector('.winner');
 const winnerNameEl = document.querySelector('.winner-name');
 
-// --- 3. CORE FUNCTIONS ---
-
-/**
- * Updates the score for a given player and checks for a winner.
- * @param {number} player - The player number (1 or 2).
- */
 const addPoint = (player) => {
-    // Stop the function if the game is over
+
     if (!gameState.gameActive) return;
 
-    // The player number (1 or 2) needs to correspond to the array index (0 or 1)
+    
     const playerIndex = player - 1;
     gameState.scores[playerIndex]++;
 
-    // Update the score display in the DOM
+    
     if (player === 1) {
         player1ScoreEl.textContent = gameState.scores[playerIndex];
     } else {
         player2ScoreEl.textContent = gameState.scores[playerIndex];
     }
 
-    // Check if the current player has reached the winning score
+    
     if (gameState.scores[playerIndex] >= gameState.winningScore) {
         showWinner(player);
     }
 };
 
-/**
- * Displays the winner and ends the game.
- * @param {number} winningPlayer - The player number who won.
- */
+
 const showWinner = (winningPlayer) => {
-    gameState.gameActive = false; // End the game
+    gameState.gameActive = false;
     winnerNameEl.textContent = `Player ${winningPlayer}`;
     winnerMessageEl.classList.remove('hidden');
 
-    // Apply winner/loser visual styles
+
     if (winningPlayer === 1) {
         player1ContainerEl.classList.add('winner');
         player2ContainerEl.classList.add('loser');
@@ -637,50 +624,39 @@ const showWinner = (winningPlayer) => {
     }
 };
 
-/**
- * Resets the game to its initial state.
- */
+
 const resetGame = () => {
-    // Reset state object
+
     gameState.scores = [0, 0];
     gameState.gameActive = true;
     gameState.winningScore = Number(winningScoreInput.value);
 
-    // Reset DOM displays
     player1ScoreEl.textContent = 0;
     player2ScoreEl.textContent = 0;
     targetScoreEl.textContent = gameState.winningScore;
 
-    // Hide winner message and remove styling
     winnerMessageEl.classList.add('hidden');
     player1ContainerEl.classList.remove('winner', 'loser');
     player2ContainerEl.classList.remove('winner', 'loser');
 };
 
 
-// --- 4. EVENT LISTENERS ---
 
-// Add Point Buttons
 addPointButtons.forEach(button => {
     button.addEventListener('click', () => {
-        // Get the player number from the button's data attribute
         const player = Number(button.dataset.player);
         addPoint(player);
     });
 });
 
-// Reset Button
 resetButton.addEventListener('click', resetGame);
 
-// Winning Score Input
 winningScoreInput.addEventListener('input', () => {
-    // When the target score changes, reset the game with the new value
     if (Number(winningScoreInput.value) > 0) {
         resetGame();
     }
 });
 
-// Keyboard Shortcuts
 document.addEventListener('keydown', (event) => {
     if (event.key === '1') {
         addPoint(1);
@@ -691,6 +667,4 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// --- 5. INITIALIZATION ---
-// Set the initial state when the page loads
 resetGame();
